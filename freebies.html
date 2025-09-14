@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Freebies — Moon & Brew</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+      };
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+    <!-- Cosmic Loader -->
+    <div id="loader" class="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50">
+      <svg class="animate-spin h-10 w-10 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-900 border-b dark:border-gray-700 px-6 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-xl font-bold text-indigo-600">🌙 Moon & Brew</a>
+      <div class="space-x-4">
+        <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-indigo-600">About</a>
+        <a href="freebies.html" class="text-gray-700 dark:text-gray-300 hover:text-indigo-600">Freebies</a>
+      </div>
+    </nav>
+
+    <!-- Freebies Vault -->
+    <main class="max-w-4xl mx-auto px-6 py-12">
+      <header class="mb-10 text-center">
+        <h1 class="text-4xl font-semibold mb-2">🎁 Freebies Vault</h1>
+        <p class="text-gray-600 dark:text-gray-400">
+          Enter your email to unlock cosmic tools, guides, and templates.
+        </p>
+      </header>
+
+      <div class="grid gap-8 md:grid-cols-2">
+        <!-- Freebie Card 1 -->
+        <div class="border rounded-lg p-6 shadow-sm dark:border-gray-700">
+          <h2 class="text-xl font-semibold mb-2">📸 Food Photo Enhancer Guide</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Make your menu visuals pop with this PDF guide.
+          </p>
+          <form onsubmit="unlock(event, 'download1')" class="space-y-3">
+            <input type="email" placeholder="Your email" required class="w-full border p-2 rounded dark:border-gray-600" />
+            <button type="submit" class="bg-black text-white px-4 py-2 rounded hover:bg-gray-700 transition">Unlock</button>
+          </form>
+          <div id="download1" class="hidden mt-4">
+            <a href="https://yourdomain.com/freebies/photo-enhancer.pdf" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500 transition" download>
+              📥 Download PDF
+            </a>
+          </div>
+        </div>
+
+        <!-- Freebie Card 2 -->
+        <div class="border rounded-lg p-6 shadow-sm dark:border-gray-700">
+          <h2 class="text-xl font-semibold mb-2">🎨 Canva Reel Templates</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            30 cosmic morning motivation reels (Malay edition).
+          </p>
+          <form onsubmit="unlock(event, 'download2')" class="space-y-3">
+            <input type="email" placeholder="Your email" required class="w-full border p-2 rounded dark:border-gray-600" />
+            <button type="submit" class="bg-black text-white px-4 py-2 rounded hover:bg-gray-700 transition">Unlock</button>
+          </form>
+          <div id="download2" class="hidden mt-4">
+            <a href="https://yourdomain.com/freebies/canva-reels.pdf" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500 transition" download>
+              📥 Download PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      window.addEventListener('load', () => {
+        document.getElementById('loader').style.display = 'none';
+      });
+
+      function unlock(e, id) {
+        e.preventDefault();
+        const form = e.target;
+        form.style.display = 'none';
+        document.getElementById(id).style.display = 'block';
+      }
+    </script>
+  </body>
+</html>
