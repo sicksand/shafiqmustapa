@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shafiq — Moon & Brew</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+      };
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+    <main class="max-w-3xl mx-auto px-6 py-12">
+      <!-- Header -->
+      <header class="mb-12 text-center">
+        <h1 class="text-4xl font-semibold mb-2">🌙 Shafiq</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400">
+          Café dreamer, meme schemer, and builder of bots that do the boring stuff.
+        </p>
+        <button onclick="document.documentElement.classList.toggle('dark')" class="mt-4 px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-700 transition">
+          Toggle Dark Mode
+        </button>
+      </header>
+
+      <!-- Freebies Section -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4">✨ Freebies</h2>
+        <ul class="space-y-3">
+          <li>🔍 <strong>Receipt Scanner Bot</strong> – Snap, scan, sort.</li>
+          <li>📊 <strong>Crypto Moodboard</strong> – Real-time vibes from the chain.</li>
+          <li>🎨 <strong>Canva Reel Templates</strong> – 30 cosmic mornings (Malay edition).</li>
+          <li>📸 <strong>Food Photo Enhancer Guide</strong> – Make your menu pop.</li>
+        </ul>
+      </section>
+
+      <!-- Projects Section -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4">🚀 Projects</h2>
+        <ul class="space-y-3">
+          <li>🌌 <strong>Moon & Brew Campaigns</strong> – Visual metaphors for stress and calm.</li>
+          <li>🛠️ <strong>Cloudflare Worker Experiments</strong> – Scheduled backend magic.</li>
+          <li>😄 <strong>Local Meme Drops</strong> – Humor brewed fresh for the café crowd.</li>
+        </ul>
+      </section>
+
+      <!-- Contact Section -->
+      <section>
+        <h2 class="text-2xl font-semibold mb-4">📬 Let’s Collaborate</h2>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          Got an idea? Want to remix one of mine? I’m open to collabs — especially if it involves food, tech, or feelings.
+        </p>
+        <a
+          href="mailto:your@email.com"
+          class="inline-block bg-black text-white px-4 py-2 rounded hover:bg-gray-700 transition"
+        >
+          Say Hello
+        </a>
+      </section>
+    </main>
+  </body>
+</html>
