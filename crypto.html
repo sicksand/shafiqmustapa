@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Crypto Bias Table</title>
+    <!-- We will use TailwindCSS for easy and clean styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        bull: '#26a69a', // TradingView Green
+                        bear: '#ef5350', // TradingView Red
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937; /* Dark background */
+        }
+        /* Style for the table cells to make them uniform */
+        th, td {
+            text-align: center;
+            padding: 1rem;
+            min-width: 100px;
+        }
+        /* Blinking animation for loading */
+        .loading-pulse {
+            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-5xl"> <!-- Increased max-width for new column -->
+        <header class="text-center mb-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Crypto Multi-Timeframe Bias</h1>
+            <p class="text-lg text-gray-400">(Live Data Version)</p>
+        </header>
+
+        <!-- Main Card -->
+        <div class="bg-gray-800 shadow-2xl rounded-lg overflow-hidden border border-gray-700">
+            <!-- Table Container -->
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-max">
+                    <!-- Table Header -->
+                    <thead class="bg-gray-700 border-b border-gray-600">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Pair</th>
+                            <th class="py-3 px-4 text-center text-xs font-semibold text-gray-300 uppercase tracking-wider">H1</th> <!-- NEW COLUMN -->
+                            <th class="py-3 px-4 text-center text-xs font-semibold text-gray-300 uppercase tracking-wider">Daily</th>
+                            <th class="py-3 px-4 text-center text-xs font-semibold text-gray-300 uppercase tracking-wider">Weekly</th>
+                            <th class="py-3 px-4 text-center text-xs font-semibold text-gray-300 uppercase tracking-wider">Monthly</th>
+                        </tr>
+                    </thead>
+                    <!-- Table Body - will be populated by JavaScript -->
+                    <tbody id="crypto-table-body" class="divide-y divide-gray-700">
+                        <!-- Loading State -->
+                        <tr id="loading-row">
+                            <td colspan="5" class="p-8 text-center text-gray-400 loading-pulse"> <!-- Updated colspan -->
+                                <svg class="animate-spin h-6 w-6 text-blue-400 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Fetching live market data...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Footer with timestamp -->
+            <div class="bg-gray-700 p-4 text-center text-xs text-gray-400 border-t border-gray-600">
+                Data from CoinGecko.
+                <span id="last-updated">Updating now...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.getElementById('crypto-table-body');
+            const loadingRow = document.getElementById('loading-row');
+            const lastUpdatedElement = document.getElementById('last-updated');
+
+            // List of coin IDs from your image, in order
+            const COIN_IDS = [
+                'bitcoin',
+                'ethereum',
+                'binancecoin',
+                'solana',
+                'ripple',
+                'cardano',
+                'dogecoin',
+                'avalanche-2',
+                'polkadot',
+                'chainlink'
+            ];
+
+            // Helper function to get bias class and text
+            // Logic: BULL >= 0, BEAR < 0
+            function getBias(percentage) {
+                if (percentage === null || percentage === undefined) {
+                    return { 
+                        biasClass: 'bg-gray-600 text-gray-100', // Neutral for N/A
+                        text: 'N/A' 
+                    };
+                }
+                const isBull = parseFloat(percentage) >= 0;
+                const biasClass = isBull ? 'bg-bull' : 'bg-bear'; // Use Tailwind colors
+                const icon = isBull ? '▲' : '▼';
+                const text = isBull ? 'BULL' : 'BEAR';
+                return { 
+                    biasClass: `${biasClass} text-white font-bold`,
+                    text: `${icon} ${text}` 
+                };
+            }
+
+            // Main function to fetch data and build the table
+            async function fetchData() {
+                console.log("Fetching new data...");
+                lastUpdatedElement.textContent = 'Updating...';
+
+                // Construct the API URL to get all data in one call
+                const idsString = COIN_IDS.join('%2C');
+                // We request price change percentages for 1h, 24h, 7d, and 30d
+                const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${idsString}&price_change_percentage=1h%2C24h%2C7d%2C30d`;
+
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                    }
+                    const data = await response.json();
+                    
+                    // Clear loading row or old data
+                    tableBody.innerHTML = "";
+
+                    // We must loop over our COIN_IDS array to maintain the user's specified order
+                    for (const id of COIN_IDS) {
+                        const coinData = data.find(coin => coin.id === id);
+                        
+                        if (!coinData) {
+                            console.warn(`No data returned for ${id}`);
+                            continue; // Skip if API didn't return data for this coin
+                        }
+
+                        // Get the bias data for each timeframe
+                        const h1 = getBias(coinData.price_change_percentage_1h_in_currency); // NEW
+                        const daily = getBias(coinData.price_change_percentage_24h_in_currency);
+                        const weekly = getBias(coinData.price_change_percentage_7d_in_currency);
+                        const monthly = getBias(coinData.price_change_percentage_30d_in_currency);
+
+                        // Create the new table row
+                        const row = document.createElement('tr');
+                        row.className = 'hover:bg-gray-750 transition-colors duration-150'; // A small hover effect
+                        
+                        row.innerHTML = `
+                            <!-- PAIR -->
+                            <td class="py-3 px-4 text-left font-semibold text-white">
+                                <div class="flex items-center">
+                                    <img src="${coinData.image}" alt="${coinData.name} logo" class="w-6 h-6 mr-3 rounded-full" onerror="this.style.display='none'">
+                                    <span>${coinData.symbol.toUpperCase()}/USDT</span>
+                                D                               </div>
+                            </td>
+                            <!-- H1 (NEW) -->
+                            <td class="py-3 px-4">
+                                <span class="py-2 px-4 rounded-md text-sm ${h1.biasClass}">
+                                    ${h1.text}
+                                </span>
+                            </td>
+                            <!-- Daily -->
+                            <td class="py-3 px-4">
+                                <span class="py-2 px-4 rounded-md text-sm ${daily.biasClass}">
+                                    ${daily.text}
+                                </span>
+                            </td>
+                            <!-- Weekly -->
+                            <td class="py-3 px-4">
+                                <span class="py-2 px-4 rounded-md text-sm ${weekly.biasClass}">
+                                    ${weekly.text}
+                                </span>
+                            </td>
+                            <!-- Monthly -->
+                            <td class="py-3 px-4">
+                                <span class="py-2 px-4 rounded-md text-sm ${monthly.biasClass}">
+                                    ${monthly.text}
+                                </span>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    }
+                    
+                    const now = new Date();
+                    lastUpdatedElement.textContent = `Last Updated: ${now.toLocaleTimeString()}`;
+
+                } catch (error) {
+                    console.error("Failed to fetch data:", error);
+                    // Show error state in the table
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="p-8 text-center text-red-400"> <!-- Updated colspan -->
+                                Error loading data. <br>
+                                <span class="text-gray-400 text-sm">${error.message}</span>
+                                <br>
+                                <button id="retry-btn" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                                    Retry Now
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    // Add event listener to the retry button
+                    document.getElementById('retry-btn').addEventListener('click', fetchData);
+                    lastUpdatedElement.textContent = 'Update failed';
+                }
+            }
+
+            // Fetch data on initial page load
+            fetchData();
+
+            // Set up an interval to refresh data every 60 seconds (60000 milliseconds)
+            setInterval(fetchData, 60000);
+        });
+    </script>
+</body>
+</html>
+
+
