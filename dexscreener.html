@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEX Screener Filter Dashboard</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Simple scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* gray-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563; /* gray-600 */
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; /* gray-500 */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen p-4 sm:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-white text-center">
+                DEX Screener Filters
+            </h1>
+            <p class="text-center text-gray-400 mt-2 text-lg">
+                Click a card to open the pre-filtered search in a new tab.
+            </p>
+        </header>
+
+        <!-- Main Grid for Filter Cards -->
+        <!-- We wrap the cards in `a` tags to make them clickable links -->
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Card: Very Degen -->
+            <a href="https://dexscreener.com/new-pairs?q=liqUsd:>10000%20fdv:>100000%20age:<48h%20txnsH1:>30"
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="block bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-700 hover:border-indigo-500 transition-all duration-300 transform hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white mb-4">Very Degen</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-indigo-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="text-gray-300">Liquidity:</span>
+                        <span class="font-medium text-white ml-auto">$10k</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-indigo-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18V9m0 9c-1.657 0-3-.895-3-2s1.343-2 3-2 3-.895 3-2-1.343-2-3-2m0 8c1.11 0 2.08-.402 2.599-1M12 18V9m0 9v0m0-9v0m0 9v0m0-9c-1.11 0-2.08-.402-2.599-1M12 18V9m0 9v0m0-9v0m0 9v0"></path></svg>
+                        <span class="text-gray-300">Min FDV:</span>
+                        <span class="font-medium text-white ml-auto">$100k</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-indigo-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-gray-300">Pair Age:</span>
+                        <span class="font-medium text-white ml-auto">0-48 hours</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-indigo-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2A8.001 8.001 0 0019.418 15m0 0H15"></path></svg>
+                        <span class="text-gray-300">1H txns:</span>
+                        <span class="font-medium text-white ml-auto">30</span>
+                    </li>
+                </ul>
+            </a>
+
+            <!-- Card: Degen -->
+            <a href="https://dexscreener.com/new-pairs?q=liqUsd:>15000%20fdv:>100000%20age:>1h%20age:<72h%20txnsH1:>100"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="block bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-700 hover:border-yellow-500 transition-all duration-300 transform hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white mb-4">Degen</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-yellow-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="text-gray-300">Min Liquidity:</span>
+                        <span class="font-medium text-white ml-auto">$15k</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-yellow-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18V9m0 9c-1.657 0-3-.895-3-2s1.343-2 3-2 3-.895 3-2-1.343-2-3-2m0 8c1.11 0 2.08-.402 2.599-1M12 18V9m0 9v0m0-9v0m0 9v0m0-9c-1.11 0-2.08-.402-2.599-1M12 18V9m0 9v0m0-9v0m0 9v0"></path></svg>
+                        <span class="text-gray-300">Min FDV:</span>
+                        <span class="font-medium text-white ml-auto">$100k</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-yellow-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-gray-300">Pair Age:</span>
+                        <span class="font-medium text-white ml-auto">1-72 hours</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-yellow-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2A8.001 8.001 0 0019.418 15m0 0H15"></path></svg>
+                        <span class="text-gray-300">1H txns:</span>
+                        <span class="font-medium text-white ml-auto">100</span>
+                    </li>
+                </ul>
+            </a>
+            
+            <!-- Card: Mid-Caps -->
+            <a href="https://dexscreener.com/new-pairs?q=liqUsd:>100000%20fdv:>1000000%20volH24:>1200000%20txnsH24:>30"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="block bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-700 hover:border-green-500 transition-all duration-300 transform hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white mb-4">Mid-Caps</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="text-gray-300">Liquidity:</span>
+                        <span class="font-medium text-white ml-auto">$100k</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18V9m0 9c-1.657 0-3-.895-3-2s1.343-2 3-2 3-.895 3-2-1.343-2-3-2m0 8c1.11 0 2.08-.402 2.599-1M12 18V9m0 9v0m0-9v0m0 9v0m0-9c-1.11 0-2.08-.402-2.599-1M12 18V9m0 9v0m0-9v0m0 9v0"></path></svg>
+                        <span class="text-gray-300">Min FDV:</span>
+                        <span class="font-medium text-white ml-auto">$1M</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        <span class="text-gray-300">24H Volume:</span>
+                        <span class="font-medium text-white ml-auto">$1.2M</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2A8.001 8.001 0 0019.418 15m0 0H15"></path></svg>
+                        <span class="text-gray-300">24H txns:</span>
+                        <span class="font-medium text-white ml-auto">30</span>
+                    </li>
+                </ul>
+            </a>
+
+            <!-- Card: Old Mid-Caps -->
+            <a href="https://dexscreener.com/new-pairs?q=liqUsd:>100000%20fdv:>200000%20fdv:<100000000%20age:>720h%20age:<2800h%20volH24:>200000%20txnsH24:>2000"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="block bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-700 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white mb-4">Old Mid-Caps</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-blue-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="text-gray-300">Liquidity:</span>
+                        <span class="font-medium text-white ml-auto">$100k</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-blue-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18V9m0 9c-1.657 0-3-.895-3-2s1.343-2 3-2 3-.895 3-2-1.343-2-3-2m0 8c1.11 0 2.08-.402 2.599-1M12 18V9m0 9v0m0-9v0m0 9v0m0-9c-1.11 0-2.08-.402-2.599-1M12 18V9m0 9v0m0-9v0m0 9v0"></path></svg>
+                        <span class="text-gray-300">FDV:</span>
+                        <span class="font-medium text-white ml-auto">$200k-$100M</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-blue-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-gray-300">Pair Age:</span>
+                        <span class="font-medium text-white ml-auto">720-2800 hrs</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-blue-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        <span class="text-gray-300">24H Volume:</span>
+                        <span class="font-medium text-white ml-auto">$200k</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-blue-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2A8.001 8.001 0 0019.418 15m0 0H15"></path></svg>
+                        <span class="text-gray-300">24H txns:</span>
+                        <span class="font-medium text-white ml-auto">2000</span>
+                    </li>
+                </ul>
+            </a>
+            
+            <!-- Card: Larger Mid Caps -->
+            <a href="https://dexscreener.com/new-pairs?q=liqUsd:>200000%20mcap:>1000000%20volH6:>150000"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="block bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-700 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white mb-4">Larger Mid Caps</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-purple-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="text-gray-300">Liquidity:</span>
+                        <span class="font-medium text-white ml-auto">$200k</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-purple-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v0m0 0v0m0-1v0m0 0c-1.11 0-2.08.402-2.599 1M12 8V7m0 1v0m0 0v0m0-1v0"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18V9m0 9c-1.657 0-3-.895-3-2s1.343-2 3-2 3-.895 3-2-1.343-2-3-2m0 8c1.11 0 2.08-.402 2.599-1M12 18V9m0 9v0m0-9v0m0 9v0m0-9c-1.11 0-2.08-.402-2.599-1M12 18V9m0 9v0m0-9v0m0 9v0"></path></svg>
+                        <span class="text-gray-300">Min Mcap:</span>
+                        <span class="font-medium text-white ml-auto">$1M</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-purple-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        <span class="text-gray-300">6H Volume:</span>
+                        <span class="font-medium text-white ml-auto">$150k</span>
+                    </li>
+                </ul>
+            </a>
+
+            <!-- Card: Other Factors (Not clickable) -->
+            <div class="bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-700 md:col-span-2 lg:col-span-1 opacity-80">
+                <h2 class="text-2xl font-semibold text-white mb-4">Other Factors</h2>
+                <p class="text-gray-400 mb-4">Look for with other tools:</p>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-gray-400 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-gray-200">Amount of fresh wallets for new pairs</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-gray-400 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-gray-200">Smart money accumulation</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-gray-400 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="text-gray-200">Wallet tracking with smart money</span>
+                    </li>
+                </ul>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 mt-12">
+            <p>This app displays filter presets and does not provide financial advice.</p>
+            <p>Dexscreener links are subject to change and are based on inferred URL parameters.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
+
+
