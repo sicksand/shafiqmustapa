@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Signal Pro V4</title>
+    <title>AI Signal Pro V5</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -66,7 +66,7 @@
                         </div>
                     </div>
 
-                    <!-- Timeframe Selector (Updated with M30 & M1) -->
+                    <!-- Timeframe Selector -->
                     <div class="flex justify-between bg-slate-950/50 p-1 rounded-xl mb-6 overflow-x-auto hide-scroll gap-1">
                         <button onclick="setTF('1d')" class="tf-btn flex-1 min-w-[40px] py-2 text-xs font-bold rounded-lg text-gray-500 transition-colors" id="btn-1d">1D</button>
                         <button onclick="setTF('4h')" class="tf-btn flex-1 min-w-[40px] py-2 text-xs font-bold rounded-lg text-gray-500 transition-colors" id="btn-4h">4H</button>
@@ -98,7 +98,7 @@
                 </div>
             </div>
 
-            <!-- BUTTON REFRESH BARU -->
+            <!-- Refresh Button -->
             <button onclick="analyzeMarket(true)" id="refreshBtn" class="w-full mt-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-sm font-bold text-gray-300 active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-slate-700 shadow-lg">
                 <i class="fa-solid fa-rotate" id="refreshIcon"></i> Refresh Analysis
             </button>
@@ -171,7 +171,7 @@
                 <h3 class="font-bold text-sm mb-4">Application Info</h3>
                 <div class="flex justify-between text-xs py-2 border-b border-gray-700">
                     <span class="text-gray-400">Version</span>
-                    <span>3.2 (Shafiq Edition)</span>
+                    <span>3.3 (Shafiq Edition)</span>
                 </div>
                 <div class="flex justify-between text-xs py-2 border-b border-gray-700">
                     <span class="text-gray-400">Data Source</span>
@@ -187,15 +187,15 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- FOOTER CREDIT -->
-            <div class="mt-12 text-center pb-8">
-                <p class="text-[10px] text-gray-600 mb-2">Created for educational purposes.</p>
-                <a href="https://wa.me/60127277015?text=crypto%20signal" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full border border-slate-700 hover:border-blue-500 transition-colors group">
-                    <i class="fa-brands fa-whatsapp text-green-500 text-lg group-hover:scale-110 transition-transform"></i>
-                    <span class="text-xs text-gray-400 group-hover:text-white">Made in Skudai ❤️ - <span class="font-bold text-blue-400">Shafiq Mustapa</span></span>
-                </a>
-            </div>
+        </div>
+
+        <!-- GLOBAL FOOTER CREDIT (Visible on ALL tabs) -->
+        <div class="mt-12 text-center pb-8">
+            <p class="text-[10px] text-gray-600 mb-2">Created for educational purposes.</p>
+            <a href="https://wa.me/60127277015?text=crypto%20signal" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full border border-slate-700 hover:border-blue-500 transition-colors group">
+                <i class="fa-brands fa-whatsapp text-green-500 text-lg group-hover:scale-110 transition-transform"></i>
+                <span class="text-xs text-gray-400 group-hover:text-white">Made in Skudai ❤️ - <span class="font-bold text-blue-400">Shafiq Mustapa</span></span>
+            </a>
         </div>
 
     </main>
@@ -483,4 +483,3 @@
     </script>
 </body>
 </html>
-
