@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Signal Pro V5</title>
+    <title>Crypto Signal by SM</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,8 +22,6 @@
         .active-coin { border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
         .active-nav { color: #3b82f6; }
         .active-risk { border-color: #3b82f6; background-color: rgba(59, 130, 246, 0.2); color: white; }
-        
-        /* Animation for Refresh Button */
         .spin-anim { animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -41,15 +39,13 @@
         <div class="text-[10px] font-mono text-gray-400" id="clock">00:00</div>
     </header>
 
-    <!-- MAIN CONTENT CONTAINER -->
+    <!-- MAIN CONTENT -->
     <main class="flex-1 overflow-y-auto pt-20 pb-24 px-4 hide-scroll relative">
 
-        <!-- VIEW 1: DASHBOARD (Home) -->
+        <!-- VIEW 1: DASHBOARD -->
         <div id="view-dashboard" class="view-section">
-            <!-- Top 10 Slider -->
-            <div id="coinList" class="flex gap-3 overflow-x-auto hide-scroll pb-4 mb-2">
-                <!-- Injected via JS -->
-            </div>
+            <!-- Coin List -->
+            <div id="coinList" class="flex gap-3 overflow-x-auto hide-scroll pb-4 mb-2"></div>
 
             <!-- Analysis Card -->
             <div class="glass-card rounded-3xl p-1 relative overflow-hidden shadow-2xl transition-all duration-300" id="mainCard">
@@ -61,12 +57,12 @@
                             <p id="currentPrice" class="font-mono text-xl text-blue-400 mt-1">$0.00</p>
                         </div>
                         <div id="biasBadge" class="px-4 py-2 rounded-xl bg-gray-800 border border-gray-700 flex flex-col items-center">
-                            <span class="text-[10px] text-gray-400 font-bold mb-1">BIAS</span>
+                            <span class="text-[10px] text-gray-400 font-bold mb-1">SIGNAL</span>
                             <span id="biasText" class="font-bold text-sm text-gray-300">WAITING</span>
                         </div>
                     </div>
 
-                    <!-- Timeframe Selector -->
+                    <!-- TF Selector -->
                     <div class="flex justify-between bg-slate-950/50 p-1 rounded-xl mb-6 overflow-x-auto hide-scroll gap-1">
                         <button onclick="setTF('1d')" class="tf-btn flex-1 min-w-[40px] py-2 text-xs font-bold rounded-lg text-gray-500 transition-colors" id="btn-1d">1D</button>
                         <button onclick="setTF('4h')" class="tf-btn flex-1 min-w-[40px] py-2 text-xs font-bold rounded-lg text-gray-500 transition-colors" id="btn-4h">4H</button>
@@ -98,25 +94,23 @@
                 </div>
             </div>
 
-            <!-- Refresh Button -->
+            <!-- Stats Bar (New) -->
+            <div class="flex justify-between items-center px-4 mt-4">
+                <div class="text-xs font-bold text-gray-400">RSI (14): <span id="rsiValue" class="text-white">--</span></div>
+                <div class="text-xs font-bold text-gray-400">Trend: <span id="trendValue" class="text-white">--</span></div>
+            </div>
+
             <button onclick="analyzeMarket(true)" id="refreshBtn" class="w-full mt-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-sm font-bold text-gray-300 active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-slate-700 shadow-lg">
                 <i class="fa-solid fa-rotate" id="refreshIcon"></i> Refresh Analysis
             </button>
-            
-            <div class="mt-4 px-2 flex items-center justify-between text-xs text-gray-500">
-                <span>Risk Mode: <strong id="riskLabelDisplay" class="text-blue-400">Standard</strong></span>
-                <span id="volatilityDisplay">Vol: ---%</span>
-            </div>
         </div>
 
-        <!-- VIEW 2: PATTERNS (Scanner) -->
+        <!-- VIEW 2: PATTERNS -->
         <div id="view-patterns" class="view-section hidden">
-            <h2 class="text-xl font-bold mb-4 px-2">Market Scanner <span class="text-xs font-normal text-gray-400 ml-2">(M15 Timeframe)</span></h2>
-            
+            <h2 class="text-xl font-bold mb-4 px-2">Scanner (RSI + Trend)</h2>
             <div id="scannerList" class="space-y-3">
                 <div class="text-center py-10 text-gray-500 animate-pulse">Scanning Markets...</div>
             </div>
-            
             <button onclick="runScanner()" class="w-full mt-6 py-3 rounded-xl bg-blue-600 text-sm font-bold shadow-lg shadow-blue-600/30">
                 <i class="fa-solid fa-radar mr-2"></i> Refresh Scanner
             </button>
@@ -125,318 +119,128 @@
         <!-- VIEW 3: SETTINGS -->
         <div id="view-settings" class="view-section hidden">
             <h2 class="text-xl font-bold mb-6 px-2">Settings</h2>
-
-            <!-- Risk Management Section -->
             <div class="bg-slate-800/50 rounded-2xl p-5 border border-slate-700 mb-6">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500"><i class="fa-solid fa-shield-halved"></i></div>
-                    <div>
-                        <h3 class="font-bold text-sm">Risk Appetite</h3>
-                        <p class="text-[10px] text-gray-400">Controls Stop Loss width</p>
-                    </div>
-                </div>
-
+                <h3 class="font-bold text-sm mb-4">Risk Appetite</h3>
                 <div class="grid grid-cols-3 gap-2">
-                    <button onclick="setRisk('conservative')" id="risk-conservative" class="risk-btn py-3 rounded-xl border border-gray-600 text-xs font-bold text-gray-400 bg-slate-900">
-                        Safe
-                        <span class="block text-[9px] font-normal opacity-70 mt-1">Wide SL</span>
-                    </button>
-                    <button onclick="setRisk('standard')" id="risk-standard" class="risk-btn py-3 rounded-xl border border-blue-500 bg-blue-500/20 text-xs font-bold text-white active-risk">
-                        Standard
-                        <span class="block text-[9px] font-normal opacity-70 mt-1">Balanced</span>
-                    </button>
-                    <button onclick="setRisk('aggressive')" id="risk-aggressive" class="risk-btn py-3 rounded-xl border border-gray-600 text-xs font-bold text-gray-400 bg-slate-900">
-                        Degen
-                        <span class="block text-[9px] font-normal opacity-70 mt-1">Tight SL</span>
-                    </button>
+                    <button onclick="setRisk('conservative')" id="risk-conservative" class="risk-btn py-3 rounded-xl border border-gray-600 text-xs font-bold text-gray-400 bg-slate-900">Safe</button>
+                    <button onclick="setRisk('standard')" id="risk-standard" class="risk-btn py-3 rounded-xl border border-blue-500 bg-blue-500/20 text-xs font-bold text-white active-risk">Normal</button>
+                    <button onclick="setRisk('aggressive')" id="risk-aggressive" class="risk-btn py-3 rounded-xl border border-gray-600 text-xs font-bold text-gray-400 bg-slate-900">Degen</button>
                 </div>
             </div>
-            
-            <!-- Storage Info -->
-            <div class="bg-slate-800/50 rounded-2xl p-5 border border-slate-700 mb-6">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500"><i class="fa-solid fa-memory"></i></div>
-                    <div>
-                        <h3 class="font-bold text-sm">Local Storage</h3>
-                        <p class="text-[10px] text-gray-400">Your preferences are saved on this device</p>
-                    </div>
-                </div>
-                <button onclick="clearData()" class="w-full mt-2 py-2 text-xs text-red-400 border border-red-900/50 rounded-lg hover:bg-red-900/20">
-                    Reset All Data
-                </button>
-            </div>
-
-            <!-- App Info & Disclaimer -->
             <div class="bg-slate-800/50 rounded-2xl p-5 border border-slate-700">
-                <h3 class="font-bold text-sm mb-4">Application Info</h3>
-                <div class="flex justify-between text-xs py-2 border-b border-gray-700">
-                    <span class="text-gray-400">Version</span>
-                    <span>3.3 (Shafiq Edition)</span>
-                </div>
-                <div class="flex justify-between text-xs py-2 border-b border-gray-700">
-                    <span class="text-gray-400">Data Source</span>
-                    <span class="text-yellow-400">Binance Public API</span>
-                </div>
-                
-                <div class="mt-4 pt-2">
-                    <div class="bg-red-900/20 border border-red-900/50 rounded-xl p-3">
-                        <p class="text-[10px] text-gray-300 leading-relaxed text-justify">
-                            <strong class="text-red-400 block mb-1 uppercase">⚠️ Legal Disclaimer</strong>
-                            This application is developed strictly for <strong>educational purposes only</strong>. Nothing contained herein constitutes financial, investment, or legal advice. Cryptocurrency trading involves high risk. Always <strong>Do Your Own Research (DYOR)</strong> before making any financial decisions. The creator (Shafiq Mustapa) assumes no responsibility or liability for any errors, omissions, or any outcomes related to the use of this application.
-                        </p>
-                    </div>
+                <h3 class="font-bold text-sm mb-2">System Info</h3>
+                <p class="text-xs text-gray-400">Logic: SMA (Trend) + RSI (Filter) + ATR (Risk)</p>
+                <div class="mt-4 pt-2 border-t border-gray-700">
+                     <p class="text-[10px] text-gray-400">⚠️ educational purposes only. Do Your Own Research.</p>
                 </div>
             </div>
         </div>
 
-        <!-- GLOBAL FOOTER CREDIT (Visible on ALL tabs) -->
+        <!-- GLOBAL FOOTER -->
         <div class="mt-12 text-center pb-8">
-            <p class="text-[10px] text-gray-600 mb-2">Created for educational purposes.</p>
-            <a href="https://wa.me/60127277015?text=crypto%20signal" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full border border-slate-700 hover:border-blue-500 transition-colors group">
+            <a href="https://wa.me/60127277015?text=crypto%20signal" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full border border-slate-700 hRSIr:border-blue-500 transition-colors group">
                 <i class="fa-brands fa-whatsapp text-green-500 text-lg group-hover:scale-110 transition-transform"></i>
                 <span class="text-xs text-gray-400 group-hover:text-white">Made in Skudai ❤️ - <span class="font-bold text-blue-400">Shafiq Mustapa</span></span>
             </a>
         </div>
-
     </main>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Nav -->
     <nav class="glass fixed bottom-0 w-full pb-safe">
         <div class="flex justify-around items-center p-2">
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 active-nav">
-                <i class="fa-solid fa-chart-pie text-xl"></i>
-                <span class="text-[9px] font-bold">Signal</span>
-            </button>
-            <button onclick="switchTab('patterns')" id="nav-patterns" class="nav-btn flex flex-col items-center gap-1 text-gray-500 p-2 w-16">
-                <i class="fa-solid fa-list-check text-xl"></i>
-                <span class="text-[9px] font-bold">Patterns</span>
-            </button>
-            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center gap-1 text-gray-500 p-2 w-16">
-                <i class="fa-solid fa-sliders text-xl"></i>
-                <span class="text-[9px] font-bold">Settings</span>
-            </button>
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn flex flex-col items-center gap-1 p-2 w-16 active-nav"><i class="fa-solid fa-chart-pie text-xl"></i><span class="text-[9px] font-bold">Signal</span></button>
+            <button onclick="switchTab('patterns')" id="nav-patterns" class="nav-btn flex flex-col items-center gap-1 text-gray-500 p-2 w-16"><i class="fa-solid fa-list-check text-xl"></i><span class="text-[9px] font-bold">Scanner</span></button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center gap-1 text-gray-500 p-2 w-16"><i class="fa-solid fa-sliders text-xl"></i><span class="text-[9px] font-bold">Settings</span></button>
         </div>
     </nav>
 
     <script>
-        // --- CONFIG ---
         const COINS = [
-            {symbol: 'BTCUSDT', name: 'Bitcoin'},
-            {symbol: 'ETHUSDT', name: 'Ethereum'},
-            {symbol: 'SOLUSDT', name: 'Solana'},
-            {symbol: 'BNBUSDT', name: 'BNB'},
-            {symbol: 'XRPUSDT', name: 'Ripple'},
-            {symbol: 'DOGEUSDT', name: 'Dogecoin'},
+            {symbol: 'BTCUSDT', name: 'Bitcoin'}, {symbol: 'ETHUSDT', name: 'Ethereum'},
+            {symbol: 'SOLUSDT', name: 'Solana'}, {symbol: 'BNBUSDT', name: 'BNB'},
+            {symbol: 'XRPUSDT', name: 'Ripple'}, {symbol: 'DOGEUSDT', name: 'Dogecoin'},
             {symbol: 'ADAUSDT', name: 'Cardano'}
         ];
 
-        let state = {
-            currentSymbol: 'BTCUSDT',
-            tf: '15m',
-            riskMultiplier: 1.5,
-            riskName: 'Standard',
-            riskMode: 'standard'
-        };
+        let state = { currentSymbol: 'BTCUSDT', tf: '15m', riskMultiplier: 1.5, riskName: 'Standard', riskMode: 'standard' };
 
-        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
-            loadSettings();
-            renderCoinList();
-            analyzeMarket();
-            startClock();
+            loadSettings(); renderCoinList(); analyzeMarket(); startClock();
         });
 
         function startClock() {
-            setInterval(() => {
-                const now = new Date();
-                document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            }, 1000);
+            setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }, 1000);
         }
 
-        // --- STORAGE ---
-        function loadSettings() {
-            const savedData = localStorage.getItem('cryptoApp_v3_settings');
-            if (savedData) {
-                const parsed = JSON.parse(savedData);
-                state = { ...state, ...parsed };
-                updateRiskUI(state.riskMode);
-                updateTFUI(state.tf);
+        // --- CORE ALGORITHMS (OTAK ROBOT) ---
+        
+        // 1. RSI Calculator (Formula Matematik)
+        function calculateRSI(prices, period = 14) {
+            let gains = 0, losses = 0;
+            // Calculate initial average
+            for (let i = 1; i <= period; i++) {
+                const diff = prices[i] - prices[i - 1];
+                if (diff >= 0) gains += diff; else losses += Math.abs(diff);
             }
-        }
+            let avgGain = gains / period;
+            let avgLoss = losses / period;
 
-        function saveSettings() {
-            localStorage.setItem('cryptoApp_v3_settings', JSON.stringify(state));
-        }
-
-        function clearData() {
-            if(confirm("Reset all app settings?")) {
-                localStorage.removeItem('cryptoApp_v3_settings');
-                window.location.reload();
-            }
-        }
-
-        // --- NAV ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`view-${tabId}`).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(el => {
-                el.classList.remove('active-nav', 'text-blue-500');
-                el.classList.add('text-gray-500');
-            });
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            activeBtn.classList.remove('text-gray-500');
-            activeBtn.classList.add('active-nav');
-
-            if(tabId === 'patterns') runScanner();
-        }
-
-        // --- RISK ---
-        function setRisk(mode) {
-            let mult = 1.5;
-            let name = 'Standard';
-            if(mode === 'conservative') { mult = 2.5; name = 'Safe'; }
-            if(mode === 'standard') { mult = 1.5; name = 'Standard'; }
-            if(mode === 'aggressive') { mult = 0.8; name = 'Degen'; }
-
-            state.riskMode = mode;
-            state.riskMultiplier = mult;
-            state.riskName = name;
-            
-            updateRiskUI(mode);
-            saveSettings();
-            analyzeMarket();
-        }
-
-        function updateRiskUI(mode) {
-            document.querySelectorAll('.risk-btn').forEach(b => {
-                b.classList.remove('active-risk', 'border-blue-500', 'bg-blue-500/20', 'text-white');
-                b.classList.add('border-gray-600', 'text-gray-400');
-            });
-            const btn = document.getElementById(`risk-${mode}`);
-            if(btn) {
-                btn.classList.remove('border-gray-600', 'text-gray-400');
-                btn.classList.add('active-risk', 'border-blue-500', 'bg-blue-500/20', 'text-white');
-            }
-            document.getElementById('riskLabelDisplay').innerText = state.riskName;
-        }
-
-        // --- DASHBOARD ---
-        function renderCoinList() {
-            const container = document.getElementById('coinList');
-            container.innerHTML = '';
-            COINS.forEach((coin, idx) => {
-                const isActive = coin.symbol === state.currentSymbol;
-                const div = document.createElement('div');
-                div.className = `min-w-[80px] p-2 rounded-xl border text-center cursor-pointer transition-all ${isActive ? 'active-coin border-blue-500' : 'border-gray-700 bg-gray-800/40'}`;
-                div.onclick = () => {
-                    state.currentSymbol = coin.symbol;
-                    saveSettings();
-                    renderCoinList();
-                    analyzeMarket();
-                };
-                div.innerHTML = `<span class="text-xs font-bold ${isActive ? 'text-white' : 'text-gray-400'}">${coin.name}</span>`;
-                container.appendChild(div);
-            });
-        }
-
-        function setTF(tf) {
-            state.tf = tf;
-            updateTFUI(tf);
-            saveSettings();
-            analyzeMarket();
-        }
-
-        function updateTFUI(tf) {
-            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active-risk'));
-            const btn = document.getElementById(`btn-${tf}`);
-            if(btn) btn.classList.add('active-risk');
-        }
-
-        async function analyzeMarket(manualRefresh = false) {
-            if(manualRefresh) {
-                document.getElementById('refreshIcon').classList.add('spin-anim');
+            // Smooth over the rest
+            for (let i = period + 1; i < prices.length; i++) {
+                const diff = prices[i] - prices[i - 1];
+                if (diff >= 0) {
+                    avgGain = (avgGain * (period - 1) + diff) / period;
+                    avgLoss = (avgLoss * (period - 1) + 0) / period;
+                } else {
+                    avgGain = (avgGain * (period - 1) + 0) / period;
+                    avgLoss = (avgLoss * (period - 1) + Math.abs(diff)) / period;
+                }
             }
             
-            document.getElementById('biasText').innerText = "LOADING...";
-            const pair = state.currentSymbol;
-            document.getElementById('pairName').innerText = pair.replace('USDT', '/USDT');
-            
-            // Visual feedback on card
-            document.getElementById('mainCard').classList.add('opacity-70');
-
-            try {
-                const data = await fetchCandles(pair, state.tf);
-                const signal = calculateLogic(data);
-                updateDashboardUI(signal);
-            } catch (e) {
-                console.error(e);
-            } finally {
-                setTimeout(() => {
-                    document.getElementById('refreshIcon').classList.remove('spin-anim');
-                    document.getElementById('mainCard').classList.remove('opacity-70');
-                }, 500);
-            }
+            const rs = avgGain / avgLoss;
+            return 100 - (100 / (1 + rs));
         }
 
-        // --- SCANNER ---
-        async function runScanner() {
-            const list = document.getElementById('scannerList');
-            list.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-circle-notch fa-spin text-blue-500"></i> Scanning...</div>';
-
-            let html = '';
-            for (const coin of COINS) {
-                try {
-                    const data = await fetchCandles(coin.symbol, '15m'); 
-                    const signal = calculateLogic(data);
-                    
-                    const colorClass = signal.bias === 'BULLISH' ? 'text-green-400' : 'text-red-400';
-                    const bgClass = signal.bias === 'BULLISH' ? 'bg-green-500/10 border-green-500/20' : 'bg-red-500/10 border-red-500/20';
-
-                    html += `
-                    <div class="flex justify-between items-center p-3 rounded-xl border ${bgClass}">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-[10px]">${coin.name.substring(0,3).toUpperCase()}</div>
-                            <div>
-                                <div class="font-bold text-sm">${coin.symbol}</div>
-                                <div class="text-[10px] ${colorClass} font-bold">${signal.bias}</div>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-xs font-mono">$${signal.price.toFixed(2)}</div>
-                            <div class="text-[9px] text-gray-500">TP: ${signal.tp1.toFixed(2)}</div>
-                        </div>
-                    </div>`;
-                } catch(e) { console.log("Scan fail " + coin.symbol); }
-            }
-            list.innerHTML = html;
-        }
-
-        // --- UTILS ---
-        async function fetchCandles(symbol, interval) {
-            const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=50`);
-            const raw = await res.json();
-            return raw.map(d => ({ close: parseFloat(d[4]), high: parseFloat(d[2]), low: parseFloat(d[3]) }));
-        }
-
+        // 2. Main Logic Analyzer (Modified)
         function calculateLogic(candles) {
-            const current = candles[candles.length - 1].close;
+            const closes = candles.map(c => c.close);
+            const current = closes[closes.length - 1];
+            
+            // SMA 20 (Trend)
             let sum = 0;
             for(let i=candles.length-21; i<candles.length-1; i++) sum += candles[i].close;
             const sma = sum / 20;
 
+            // RSI 14 (Momentum)
+            const rsi = calculateRSI(closes, 14);
+
+            // ATR 14 (Volatility)
             let trSum = 0;
             for(let i=candles.length-15; i<candles.length-1; i++) trSum += (candles[i].high - candles[i].low);
             const atr = trSum / 14;
 
-            const isBullish = current > sma;
-            const volatility = (atr / current) * 100;
-            const range = atr * state.riskMultiplier;
+            // LOGIC BARU:
+            // Buy jika: Harga atas SMA DAN RSI bawah 70 (Belum overbought)
+            // Sell jika: Harga bawah SMA DAN RSI atas 30 (Belum oversold)
             
+            const isTrendUp = current > sma;
+            let signalType = 'NEUTRAL';
+            let signalStrength = 'WAIT';
+
+            if (isTrendUp) {
+                if (rsi < 70) { signalType = 'BULLISH'; signalStrength = 'STRONG BUY'; }
+                else { signalType = 'BULLISH'; signalStrength = 'WEAK BUY (Overbought)'; }
+            } else {
+                if (rsi > 30) { signalType = 'BEARISH'; signalStrength = 'STRONG SELL'; }
+                else { signalType = 'BEARISH'; signalStrength = 'WEAK SELL (Oversold)'; }
+            }
+
+            // TP/SL Calc
+            const range = atr * state.riskMultiplier;
             let entry = current;
             let sl, tp1, tp2, tp3;
 
-            if(isBullish) {
+            if(signalType === 'BULLISH') {
                 sl = current - range;
                 tp1 = current + range;
                 tp2 = current + (range * 2);
@@ -449,37 +253,130 @@
             }
 
             return {
-                bias: isBullish ? 'BULLISH' : 'BEARISH',
-                price: current, entry, sl, tp1, tp2, tp3, volatility
+                type: signalType,
+                strength: signalStrength,
+                price: current, entry, sl, tp1, tp2, tp3, rsi, isTrendUp
             };
         }
 
-        function updateDashboardUI(data) {
-            // FORMAT $ (Dollar Sign)
-            const fmt = (n) => '$' + (n < 10 ? n.toFixed(4) : n.toFixed(2));
+        // --- UI UPDATERS ---
+        async function analyzeMarket(manual = false) {
+            if(manual) document.getElementById('refreshIcon').classList.add('spin-anim');
+            document.getElementById('biasText').innerText = "CALCULATING...";
+            document.getElementById('mainCard').classList.add('opacity-70');
 
-            document.getElementById('currentPrice').innerText = fmt(data.price);
-            document.getElementById('volatilityDisplay').innerText = `Vol: ${data.volatility.toFixed(2)}%`;
+            try {
+                const data = await fetchCandles(state.currentSymbol, state.tf);
+                const signal = calculateLogic(data);
+                
+                // Update Badge
+                const badge = document.getElementById('biasBadge');
+                const txt = document.getElementById('biasText');
+                
+                if(signal.type === 'BULLISH') {
+                    badge.className = "px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/30 flex flex-col items-center min-w-[100px]";
+                    txt.className = "font-bold text-sm text-green-400";
+                    txt.innerHTML = signal.strength === 'STRONG BUY' ? '<i class="fa-solid fa-rocket"></i> STRONG BUY' : '<i class="fa-solid fa-triangle-exclamation"></i> WEAK BUY';
+                } else {
+                    badge.className = "px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/30 flex flex-col items-center min-w-[100px]";
+                    txt.className = "font-bold text-sm text-red-400";
+                    txt.innerHTML = signal.strength === 'STRONG SELL' ? '<i class="fa-solid fa-dumpster-fire"></i> STRONG SELL' : '<i class="fa-solid fa-triangle-exclamation"></i> WEAK SELL';
+                }
 
-            const badge = document.getElementById('biasBadge');
-            const txt = document.getElementById('biasText');
-            if(data.bias === 'BULLISH') {
-                badge.className = "px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/30 flex flex-col items-center min-w-[80px]";
-                txt.className = "font-bold text-sm text-green-400";
-                txt.innerHTML = '<i class="fa-solid fa-arrow-trend-up"></i> BUY';
-            } else {
-                badge.className = "px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/30 flex flex-col items-center min-w-[80px]";
-                txt.className = "font-bold text-sm text-red-400";
-                txt.innerHTML = '<i class="fa-solid fa-arrow-trend-down"></i> SELL';
+                // Update Stats
+                document.getElementById('rsiValue').innerText = signal.rsi.toFixed(1);
+                document.getElementById('rsiValue').className = signal.rsi > 70 ? 'text-red-400 font-bold' : (signal.rsi < 30 ? 'text-green-400 font-bold' : 'text-white');
+                document.getElementById('trendValue').innerText = signal.isTrendUp ? 'UPTREND' : 'DOWNTREND';
+                document.getElementById('trendValue').className = signal.isTrendUp ? 'text-green-400' : 'text-red-400';
+
+                // Update Prices
+                const fmt = n => '$' + (n < 10 ? n.toFixed(4) : n.toFixed(2));
+                document.getElementById('currentPrice').innerText = fmt(signal.price);
+                document.getElementById('entryPrice').innerText = fmt(signal.entry);
+                document.getElementById('slPrice').innerText = fmt(signal.sl);
+                document.getElementById('tp1Price').innerText = fmt(signal.tp1);
+                document.getElementById('tp2Price').innerText = fmt(signal.tp2);
+                document.getElementById('tp3Price').innerText = fmt(signal.tp3);
+
+            } catch (e) { console.error(e); } 
+            finally { 
+                setTimeout(() => {
+                    document.getElementById('refreshIcon').classList.remove('spin-anim');
+                    document.getElementById('mainCard').classList.remove('opacity-70');
+                }, 500);
             }
-
-            document.getElementById('entryPrice').innerText = fmt(data.entry);
-            document.getElementById('slPrice').innerText = fmt(data.sl);
-            document.getElementById('tp1Price').innerText = fmt(data.tp1);
-            document.getElementById('tp2Price').innerText = fmt(data.tp2);
-            document.getElementById('tp3Price').innerText = fmt(data.tp3);
         }
 
+        async function runScanner() {
+            const list = document.getElementById('scannerList');
+            list.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-circle-notch fa-spin text-blue-500"></i> Scanning...</div>';
+            let html = '';
+            for (const coin of COINS) {
+                try {
+                    const data = await fetchCandles(coin.symbol, '15m'); 
+                    const signal = calculateLogic(data);
+                    const color = signal.type === 'BULLISH' ? 'text-green-400' : 'text-red-400';
+                    const bg = signal.type === 'BULLISH' ? 'bg-green-500/10 border-green-500/20' : 'bg-red-500/10 border-red-500/20';
+                    html += `<div class="flex justify-between items-center p-3 rounded-xl border ${bg}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-[10px]">${coin.name.substring(0,3).toUpperCase()}</div>
+                            <div>
+                                <div class="font-bold text-sm">${coin.symbol}</div>
+                                <div class="text-[10px] ${color} font-bold">${signal.strength}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-gray-400">RSI: ${signal.rsi.toFixed(0)}</div>
+                            <div class="text-[9px] text-gray-500">TP: ${signal.tp1.toFixed(2)}</div>
+                        </div>
+                    </div>`;
+                } catch(e) {}
+            }
+            list.innerHTML = html;
+        }
+
+        // --- UTILS ---
+        async function fetchCandles(symbol, interval) {
+            const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=100`);
+            const raw = await res.json();
+            return raw.map(d => ({ close: parseFloat(d[4]), high: parseFloat(d[2]), low: parseFloat(d[3]) }));
+        }
+
+        function loadSettings() {
+            const savedData = localStorage.getItem('cryptoApp_v3_settings');
+            if (savedData) { const parsed = JSON.parse(savedData); state = { ...state, ...parsed }; updateRiskUI(state.riskMode); updateTFUI(state.tf); }
+        }
+        function saveSettings() { localStorage.setItem('cryptoApp_v3_settings', JSON.stringify(state)); }
+        function renderCoinList() {
+            const container = document.getElementById('coinList'); container.innerHTML = '';
+            COINS.forEach((coin) => {
+                const isActive = coin.symbol === state.currentSymbol;
+                const div = document.createElement('div');
+                div.className = `min-w-[80px] p-2 rounded-xl border text-center cursor-pointer transition-all ${isActive ? 'active-coin border-blue-500' : 'border-gray-700 bg-gray-800/40'}`;
+                div.onclick = () => { state.currentSymbol = coin.symbol; saveSettings(); renderCoinList(); analyzeMarket(); };
+                div.innerHTML = `<span class="text-xs font-bold ${isActive ? 'text-white' : 'text-gray-400'}">${coin.name}</span>`;
+                container.appendChild(div);
+            });
+        }
+        function setTF(tf) { state.tf = tf; updateTFUI(tf); saveSettings(); analyzeMarket(); }
+        function updateTFUI(tf) { document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active-risk')); const btn = document.getElementById(`btn-${tf}`); if(btn) btn.classList.add('active-risk'); }
+        function setRisk(mode) {
+            let mult = 1.5; let name = 'Standard';
+            if(mode === 'conservative') { mult = 2.5; name = 'Safe'; } if(mode === 'aggressive') { mult = 0.8; name = 'Degen'; }
+            state.riskMode = mode; state.riskMultiplier = mult; state.riskName = name;
+            updateRiskUI(mode); saveSettings(); analyzeMarket();
+        }
+        function updateRiskUI(mode) {
+            document.querySelectorAll('.risk-btn').forEach(b => { b.classList.remove('active-risk', 'border-blue-500', 'bg-blue-500/20', 'text-white'); b.classList.add('border-gray-600', 'text-gray-400'); });
+            const btn = document.getElementById(`risk-${mode}`); if(btn) { btn.classList.remove('border-gray-600', 'text-gray-400'); btn.classList.add('active-risk', 'border-blue-500', 'bg-blue-500/20', 'text-white'); }
+        }
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden')); document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(el => { el.classList.remove('active-nav', 'text-blue-500'); el.classList.add('text-gray-500'); });
+            document.getElementById(`nav-${tabId}`).classList.remove('text-gray-500'); document.getElementById(`nav-${tabId}`).classList.add('active-nav');
+            if(tabId === 'patterns') runScanner();
+        }
     </script>
 </body>
 </html>
+
