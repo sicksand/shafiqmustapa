@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Crypto Signal by SM</title>
+    <title>AI Signal Pro V8 (Forex+Crypto)</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,6 +20,7 @@
         .glass-card { background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(255, 255, 255, 0.05); }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .active-coin { border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
+        .active-coin-forex { border-color: #eab308; background: rgba(234, 179, 8, 0.15); }
         .active-nav { color: #3b82f6; }
         .active-risk { border-color: #3b82f6; background-color: rgba(59, 130, 246, 0.2); color: white; }
         .spin-anim { animation: spin 1s linear infinite; }
@@ -53,7 +54,10 @@
                     
                     <div class="flex justify-between items-start mb-6">
                         <div>
-                            <h2 id="pairName" class="text-3xl font-bold text-white tracking-tight">BTC/USDT</h2>
+                            <div class="flex items-center gap-2">
+                                <h2 id="pairName" class="text-3xl font-bold text-white tracking-tight">BTC/USDT</h2>
+                                <span id="assetTypeBadge" class="text-[9px] px-2 py-0.5 rounded bg-gray-700 text-gray-300 font-bold uppercase">CRYPTO</span>
+                            </div>
                             <p id="currentPrice" class="font-mono text-xl text-blue-400 mt-1">$0.00</p>
                         </div>
                         <div id="biasBadge" class="px-4 py-2 rounded-xl bg-gray-800 border border-gray-700 flex flex-col items-center">
@@ -94,7 +98,7 @@
                 </div>
             </div>
 
-            <!-- Stats Bar (New) -->
+            <!-- Stats Bar -->
             <div class="flex justify-between items-center px-4 mt-4">
                 <div class="text-xs font-bold text-gray-400">RSI (14): <span id="rsiValue" class="text-white">--</span></div>
                 <div class="text-xs font-bold text-gray-400">Trend: <span id="trendValue" class="text-white">--</span></div>
@@ -107,7 +111,7 @@
 
         <!-- VIEW 2: PATTERNS -->
         <div id="view-patterns" class="view-section hidden">
-            <h2 class="text-xl font-bold mb-4 px-2">Scanner (RSI + Trend)</h2>
+            <h2 class="text-xl font-bold mb-4 px-2">Scanner (Forex & Crypto)</h2>
             <div id="scannerList" class="space-y-3">
                 <div class="text-center py-10 text-gray-500 animate-pulse">Scanning Markets...</div>
             </div>
@@ -129,16 +133,23 @@
             </div>
             <div class="bg-slate-800/50 rounded-2xl p-5 border border-slate-700">
                 <h3 class="font-bold text-sm mb-2">System Info</h3>
-                <p class="text-xs text-gray-400">Logic: SMA (Trend) + RSI (Filter) + ATR (Risk)</p>
+                <p class="text-xs text-gray-400">Note: Forex data is approximated using Binance Stablecoin pairs (PAXG/USDT for Gold, EUR/USDT for Euro).</p>
+                
+                <!-- DISCLAIMER RESTORED -->
                 <div class="mt-4 pt-2 border-t border-gray-700">
-                     <p class="text-[10px] text-gray-400">⚠️ educational purposes only. Do Your Own Research.</p>
+                    <div class="bg-red-900/20 border border-red-900/50 rounded-xl p-3 mt-2">
+                        <p class="text-[10px] text-gray-300 leading-relaxed text-justify">
+                            <strong class="text-red-400 block mb-1 uppercase">⚠️ Legal Disclaimer</strong>
+                            This application is developed strictly for <strong>educational purposes only</strong>. Nothing contained herein constitutes financial, investment, or legal advice. Cryptocurrency trading involves high risk. Always <strong>Do Your Own Research (DYOR)</strong> before making any financial decisions. The creator (Shafiq Mustapa) assumes no responsibility or liability for any errors, omissions, or any outcomes related to the use of this application.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- GLOBAL FOOTER -->
         <div class="mt-12 text-center pb-8">
-            <a href="https://wa.me/60127277015?text=crypto%20signal" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full border border-slate-700 hRSIr:border-blue-500 transition-colors group">
+            <a href="https://wa.me/60127277015?text=crypto%20signal" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full border border-slate-700 hover:border-blue-500 transition-colors group">
                 <i class="fa-brands fa-whatsapp text-green-500 text-lg group-hover:scale-110 transition-transform"></i>
                 <span class="text-xs text-gray-400 group-hover:text-white">Made in Skudai ❤️ - <span class="font-bold text-blue-400">Shafiq Mustapa</span></span>
             </a>
@@ -155,14 +166,18 @@
     </nav>
 
     <script>
+        // CONFIG - Added Forex Pairs via Proxy (PAXG = Gold, EUR = Euro)
         const COINS = [
-            {symbol: 'BTCUSDT', name: 'Bitcoin'}, {symbol: 'ETHUSDT', name: 'Ethereum'},
-            {symbol: 'SOLUSDT', name: 'Solana'}, {symbol: 'BNBUSDT', name: 'BNB'},
-            {symbol: 'XRPUSDT', name: 'Ripple'}, {symbol: 'DOGEUSDT', name: 'Dogecoin'},
-            {symbol: 'ADAUSDT', name: 'Cardano'}
+            {symbol: 'PAXGUSDT', name: 'GOLD (XAU)', type: 'forex'}, // Gold Wrapper
+            {symbol: 'EURUSDT', name: 'EURO (EUR)', type: 'forex'},  // Euro Wrapper
+            {symbol: 'BTCUSDT', name: 'Bitcoin', type: 'crypto'},
+            {symbol: 'ETHUSDT', name: 'Ethereum', type: 'crypto'},
+            {symbol: 'SOLUSDT', name: 'Solana', type: 'crypto'},
+            {symbol: 'BNBUSDT', name: 'BNB', type: 'crypto'},
+            {symbol: 'XRPUSDT', name: 'Ripple', type: 'crypto'}
         ];
 
-        let state = { currentSymbol: 'BTCUSDT', tf: '15m', riskMultiplier: 1.5, riskName: 'Standard', riskMode: 'standard' };
+        let state = { currentSymbol: 'BTCUSDT', currentName: 'Bitcoin', currentType: 'crypto', tf: '15m', riskMultiplier: 1.5, riskName: 'Standard', riskMode: 'standard' };
 
         document.addEventListener('DOMContentLoaded', () => {
             loadSettings(); renderCoinList(); analyzeMarket(); startClock();
@@ -172,60 +187,36 @@
             setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }, 1000);
         }
 
-        // --- CORE ALGORITHMS (OTAK ROBOT) ---
-        
-        // 1. RSI Calculator (Formula Matematik)
+        // --- CORE ALGORITHMS ---
         function calculateRSI(prices, period = 14) {
             let gains = 0, losses = 0;
-            // Calculate initial average
             for (let i = 1; i <= period; i++) {
                 const diff = prices[i] - prices[i - 1];
                 if (diff >= 0) gains += diff; else losses += Math.abs(diff);
             }
-            let avgGain = gains / period;
-            let avgLoss = losses / period;
-
-            // Smooth over the rest
+            let avgGain = gains / period; let avgLoss = losses / period;
             for (let i = period + 1; i < prices.length; i++) {
                 const diff = prices[i] - prices[i - 1];
-                if (diff >= 0) {
-                    avgGain = (avgGain * (period - 1) + diff) / period;
-                    avgLoss = (avgLoss * (period - 1) + 0) / period;
-                } else {
-                    avgGain = (avgGain * (period - 1) + 0) / period;
-                    avgLoss = (avgLoss * (period - 1) + Math.abs(diff)) / period;
-                }
+                if (diff >= 0) { avgGain = (avgGain * (period - 1) + diff) / period; avgLoss = (avgLoss * (period - 1) + 0) / period; } 
+                else { avgGain = (avgGain * (period - 1) + 0) / period; avgLoss = (avgLoss * (period - 1) + Math.abs(diff)) / period; }
             }
-            
-            const rs = avgGain / avgLoss;
-            return 100 - (100 / (1 + rs));
+            const rs = avgGain / avgLoss; return 100 - (100 / (1 + rs));
         }
 
-        // 2. Main Logic Analyzer (Modified)
         function calculateLogic(candles) {
             const closes = candles.map(c => c.close);
             const current = closes[closes.length - 1];
             
-            // SMA 20 (Trend)
-            let sum = 0;
-            for(let i=candles.length-21; i<candles.length-1; i++) sum += candles[i].close;
+            let sum = 0; for(let i=candles.length-21; i<candles.length-1; i++) sum += candles[i].close;
             const sma = sum / 20;
 
-            // RSI 14 (Momentum)
             const rsi = calculateRSI(closes, 14);
 
-            // ATR 14 (Volatility)
-            let trSum = 0;
-            for(let i=candles.length-15; i<candles.length-1; i++) trSum += (candles[i].high - candles[i].low);
+            let trSum = 0; for(let i=candles.length-15; i<candles.length-1; i++) trSum += (candles[i].high - candles[i].low);
             const atr = trSum / 14;
 
-            // LOGIC BARU:
-            // Buy jika: Harga atas SMA DAN RSI bawah 70 (Belum overbought)
-            // Sell jika: Harga bawah SMA DAN RSI atas 30 (Belum oversold)
-            
             const isTrendUp = current > sma;
-            let signalType = 'NEUTRAL';
-            let signalStrength = 'WAIT';
+            let signalType = 'NEUTRAL'; let signalStrength = 'WAIT';
 
             if (isTrendUp) {
                 if (rsi < 70) { signalType = 'BULLISH'; signalStrength = 'STRONG BUY'; }
@@ -235,62 +226,58 @@
                 else { signalType = 'BEARISH'; signalStrength = 'WEAK SELL (Oversold)'; }
             }
 
-            // TP/SL Calc
             const range = atr * state.riskMultiplier;
-            let entry = current;
-            let sl, tp1, tp2, tp3;
+            let entry = current; let sl, tp1, tp2, tp3;
 
             if(signalType === 'BULLISH') {
-                sl = current - range;
-                tp1 = current + range;
-                tp2 = current + (range * 2);
-                tp3 = current + (range * 3);
+                sl = current - range; tp1 = current + range; tp2 = current + (range * 2); tp3 = current + (range * 3);
             } else {
-                sl = current + range;
-                tp1 = current - range;
-                tp2 = current - (range * 2);
-                tp3 = current - (range * 3);
+                sl = current + range; tp1 = current - range; tp2 = current - (range * 2); tp3 = current - (range * 3);
             }
 
-            return {
-                type: signalType,
-                strength: signalStrength,
-                price: current, entry, sl, tp1, tp2, tp3, rsi, isTrendUp
-            };
+            return { type: signalType, strength: signalStrength, price: current, entry, sl, tp1, tp2, tp3, rsi, isTrendUp };
         }
 
         // --- UI UPDATERS ---
         async function analyzeMarket(manual = false) {
             if(manual) document.getElementById('refreshIcon').classList.add('spin-anim');
-            document.getElementById('biasText').innerText = "CALCULATING...";
+            document.getElementById('biasText').innerText = "CALC...";
             document.getElementById('mainCard').classList.add('opacity-70');
 
             try {
                 const data = await fetchCandles(state.currentSymbol, state.tf);
                 const signal = calculateLogic(data);
                 
-                // Update Badge
+                // Update Name & Badge
+                document.getElementById('pairName').innerText = state.currentName;
+                const typeBadge = document.getElementById('assetTypeBadge');
+                typeBadge.innerText = state.currentType;
+                typeBadge.className = state.currentType === 'forex' 
+                    ? "text-[9px] px-2 py-0.5 rounded bg-yellow-600/20 text-yellow-400 font-bold uppercase border border-yellow-600/30"
+                    : "text-[9px] px-2 py-0.5 rounded bg-blue-600/20 text-blue-400 font-bold uppercase border border-blue-600/30";
+
                 const badge = document.getElementById('biasBadge');
                 const txt = document.getElementById('biasText');
                 
                 if(signal.type === 'BULLISH') {
                     badge.className = "px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/30 flex flex-col items-center min-w-[100px]";
                     txt.className = "font-bold text-sm text-green-400";
-                    txt.innerHTML = signal.strength === 'STRONG BUY' ? '<i class="fa-solid fa-rocket"></i> STRONG BUY' : '<i class="fa-solid fa-triangle-exclamation"></i> WEAK BUY';
+                    txt.innerHTML = signal.strength.includes('STRONG') ? '<i class="fa-solid fa-rocket"></i> STRONG BUY' : '<i class="fa-solid fa-triangle-exclamation"></i> WEAK BUY';
                 } else {
                     badge.className = "px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/30 flex flex-col items-center min-w-[100px]";
                     txt.className = "font-bold text-sm text-red-400";
-                    txt.innerHTML = signal.strength === 'STRONG SELL' ? '<i class="fa-solid fa-dumpster-fire"></i> STRONG SELL' : '<i class="fa-solid fa-triangle-exclamation"></i> WEAK SELL';
+                    txt.innerHTML = signal.strength.includes('STRONG') ? '<i class="fa-solid fa-dumpster-fire"></i> STRONG SELL' : '<i class="fa-solid fa-triangle-exclamation"></i> WEAK SELL';
                 }
 
-                // Update Stats
                 document.getElementById('rsiValue').innerText = signal.rsi.toFixed(1);
                 document.getElementById('rsiValue').className = signal.rsi > 70 ? 'text-red-400 font-bold' : (signal.rsi < 30 ? 'text-green-400 font-bold' : 'text-white');
                 document.getElementById('trendValue').innerText = signal.isTrendUp ? 'UPTREND' : 'DOWNTREND';
                 document.getElementById('trendValue').className = signal.isTrendUp ? 'text-green-400' : 'text-red-400';
 
-                // Update Prices
-                const fmt = n => '$' + (n < 10 ? n.toFixed(4) : n.toFixed(2));
+                // Price Formatting (Auto-detect decimals)
+                const decimals = signal.price < 2 ? 4 : 2; // Forex pairs like Euro need 4 decimals
+                const fmt = n => '$' + n.toFixed(decimals);
+
                 document.getElementById('currentPrice').innerText = fmt(signal.price);
                 document.getElementById('entryPrice').innerText = fmt(signal.entry);
                 document.getElementById('slPrice').innerText = fmt(signal.sl);
@@ -317,17 +304,21 @@
                     const signal = calculateLogic(data);
                     const color = signal.type === 'BULLISH' ? 'text-green-400' : 'text-red-400';
                     const bg = signal.type === 'BULLISH' ? 'bg-green-500/10 border-green-500/20' : 'bg-red-500/10 border-red-500/20';
+                    
+                    // Forex styling
+                    const nameColor = coin.type === 'forex' ? 'text-yellow-400' : 'text-white';
+                    
                     html += `<div class="flex justify-between items-center p-3 rounded-xl border ${bg}">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-[10px]">${coin.name.substring(0,3).toUpperCase()}</div>
+                            <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-[10px] ${nameColor}">${coin.name.substring(0,3).toUpperCase()}</div>
                             <div>
-                                <div class="font-bold text-sm">${coin.symbol}</div>
+                                <div class="font-bold text-sm ${nameColor}">${coin.name}</div>
                                 <div class="text-[10px] ${color} font-bold">${signal.strength}</div>
                             </div>
                         </div>
                         <div class="text-right">
                             <div class="text-xs text-gray-400">RSI: ${signal.rsi.toFixed(0)}</div>
-                            <div class="text-[9px] text-gray-500">TP: ${signal.tp1.toFixed(2)}</div>
+                            <div class="text-[9px] text-gray-500">TP: ${signal.tp1.toFixed(signal.price < 2 ? 4 : 2)}</div>
                         </div>
                     </div>`;
                 } catch(e) {}
@@ -347,17 +338,32 @@
             if (savedData) { const parsed = JSON.parse(savedData); state = { ...state, ...parsed }; updateRiskUI(state.riskMode); updateTFUI(state.tf); }
         }
         function saveSettings() { localStorage.setItem('cryptoApp_v3_settings', JSON.stringify(state)); }
+        
         function renderCoinList() {
             const container = document.getElementById('coinList'); container.innerHTML = '';
             COINS.forEach((coin) => {
                 const isActive = coin.symbol === state.currentSymbol;
+                const isForex = coin.type === 'forex';
+                
+                const activeClass = isForex ? 'active-coin-forex border-yellow-500' : 'active-coin border-blue-500';
+                const baseClass = isForex ? 'border-yellow-900/30 bg-yellow-900/10' : 'border-gray-700 bg-gray-800/40';
+                
                 const div = document.createElement('div');
-                div.className = `min-w-[80px] p-2 rounded-xl border text-center cursor-pointer transition-all ${isActive ? 'active-coin border-blue-500' : 'border-gray-700 bg-gray-800/40'}`;
-                div.onclick = () => { state.currentSymbol = coin.symbol; saveSettings(); renderCoinList(); analyzeMarket(); };
-                div.innerHTML = `<span class="text-xs font-bold ${isActive ? 'text-white' : 'text-gray-400'}">${coin.name}</span>`;
+                div.className = `min-w-[90px] p-2 rounded-xl border text-center cursor-pointer transition-all ${isActive ? activeClass : baseClass}`;
+                div.onclick = () => { 
+                    state.currentSymbol = coin.symbol; 
+                    state.currentName = coin.name;
+                    state.currentType = coin.type;
+                    saveSettings(); renderCoinList(); analyzeMarket(); 
+                };
+                
+                const textColor = isActive ? (isForex ? 'text-yellow-400' : 'text-white') : (isForex ? 'text-yellow-600' : 'text-gray-400');
+                
+                div.innerHTML = `<span class="text-xs font-bold ${textColor}">${coin.name}</span>`;
                 container.appendChild(div);
             });
         }
+        
         function setTF(tf) { state.tf = tf; updateTFUI(tf); saveSettings(); analyzeMarket(); }
         function updateTFUI(tf) { document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active-risk')); const btn = document.getElementById(`btn-${tf}`); if(btn) btn.classList.add('active-risk'); }
         function setRisk(mode) {
