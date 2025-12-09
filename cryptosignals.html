@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Signal Pro V8 (Forex+Crypto)</title>
+    <title>AI Signal Pro V9 (Tuned)</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -133,10 +133,10 @@
             </div>
             <div class="bg-slate-800/50 rounded-2xl p-5 border border-slate-700">
                 <h3 class="font-bold text-sm mb-2">System Info</h3>
-                <p class="text-xs text-gray-400">Note: Forex data is approximated using Binance Stablecoin pairs (PAXG/USDT for Gold, EUR/USDT for Euro).</p>
+                <p class="text-xs text-gray-400">Note: Forex volatility is boosted (2x) to provide better range.</p>
                 
-                <!-- DISCLAIMER RESTORED -->
-             <div class="mt-4 pt-2 border-t border-gray-700">
+                <!-- DISCLAIMER -->
+                <div class="mt-4 pt-2 border-t border-gray-700">
                     <div class="bg-red-900/20 border border-red-900/50 rounded-xl p-3 mt-2">
                         <p class="text-[10px] text-gray-300 leading-relaxed text-justify">
                             <strong class="text-red-400 block mb-1 uppercase">⚠️ Legal Disclaimer</strong>
@@ -166,10 +166,9 @@
     </nav>
 
     <script>
-        // CONFIG - Added Forex Pairs via Proxy (PAXG = Gold, EUR = Euro)
         const COINS = [
-            {symbol: 'PAXGUSDT', name: 'GOLD (XAU)', type: 'forex'}, // Gold Wrapper
-            {symbol: 'EURUSDT', name: 'EURO (EUR)', type: 'forex'},  // Euro Wrapper
+            {symbol: 'PAXGUSDT', name: 'GOLD (XAU)', type: 'forex'}, 
+            {symbol: 'EURUSDT', name: 'EURO (EUR)', type: 'forex'}, 
             {symbol: 'BTCUSDT', name: 'Bitcoin', type: 'crypto'},
             {symbol: 'ETHUSDT', name: 'Ethereum', type: 'crypto'},
             {symbol: 'SOLUSDT', name: 'Solana', type: 'crypto'},
@@ -226,7 +225,11 @@
                 else { signalType = 'BEARISH'; signalStrength = 'WEAK SELL (Oversold)'; }
             }
 
-            const range = atr * state.riskMultiplier;
+            // --- RISK TUNING ---
+            // If forex, multiply ATR by 2.0 to widen the gap
+            const forexBooster = state.currentType === 'forex' ? 2.0 : 1.0;
+            const range = atr * state.riskMultiplier * forexBooster;
+
             let entry = current; let sl, tp1, tp2, tp3;
 
             if(signalType === 'BULLISH') {
@@ -248,7 +251,6 @@
                 const data = await fetchCandles(state.currentSymbol, state.tf);
                 const signal = calculateLogic(data);
                 
-                // Update Name & Badge
                 document.getElementById('pairName').innerText = state.currentName;
                 const typeBadge = document.getElementById('assetTypeBadge');
                 typeBadge.innerText = state.currentType;
@@ -274,8 +276,8 @@
                 document.getElementById('trendValue').innerText = signal.isTrendUp ? 'UPTREND' : 'DOWNTREND';
                 document.getElementById('trendValue').className = signal.isTrendUp ? 'text-green-400' : 'text-red-400';
 
-                // Price Formatting (Auto-detect decimals)
-                const decimals = signal.price < 2 ? 4 : 2; // Forex pairs like Euro need 4 decimals
+                // Price Formatting
+                const decimals = signal.price < 5 ? 4 : 2; 
                 const fmt = n => '$' + n.toFixed(decimals);
 
                 document.getElementById('currentPrice').innerText = fmt(signal.price);
@@ -304,8 +306,6 @@
                     const signal = calculateLogic(data);
                     const color = signal.type === 'BULLISH' ? 'text-green-400' : 'text-red-400';
                     const bg = signal.type === 'BULLISH' ? 'bg-green-500/10 border-green-500/20' : 'bg-red-500/10 border-red-500/20';
-                    
-                    // Forex styling
                     const nameColor = coin.type === 'forex' ? 'text-yellow-400' : 'text-white';
                     
                     html += `<div class="flex justify-between items-center p-3 rounded-xl border ${bg}">
@@ -318,7 +318,7 @@
                         </div>
                         <div class="text-right">
                             <div class="text-xs text-gray-400">RSI: ${signal.rsi.toFixed(0)}</div>
-                            <div class="text-[9px] text-gray-500">TP: ${signal.tp1.toFixed(signal.price < 2 ? 4 : 2)}</div>
+                            <div class="text-[9px] text-gray-500">TP: ${signal.tp1.toFixed(signal.price < 5 ? 4 : 2)}</div>
                         </div>
                     </div>`;
                 } catch(e) {}
@@ -344,21 +344,15 @@
             COINS.forEach((coin) => {
                 const isActive = coin.symbol === state.currentSymbol;
                 const isForex = coin.type === 'forex';
-                
                 const activeClass = isForex ? 'active-coin-forex border-yellow-500' : 'active-coin border-blue-500';
                 const baseClass = isForex ? 'border-yellow-900/30 bg-yellow-900/10' : 'border-gray-700 bg-gray-800/40';
-                
                 const div = document.createElement('div');
                 div.className = `min-w-[90px] p-2 rounded-xl border text-center cursor-pointer transition-all ${isActive ? activeClass : baseClass}`;
                 div.onclick = () => { 
-                    state.currentSymbol = coin.symbol; 
-                    state.currentName = coin.name;
-                    state.currentType = coin.type;
+                    state.currentSymbol = coin.symbol; state.currentName = coin.name; state.currentType = coin.type;
                     saveSettings(); renderCoinList(); analyzeMarket(); 
                 };
-                
                 const textColor = isActive ? (isForex ? 'text-yellow-400' : 'text-white') : (isForex ? 'text-yellow-600' : 'text-gray-400');
-                
                 div.innerHTML = `<span class="text-xs font-bold ${textColor}">${coin.name}</span>`;
                 container.appendChild(div);
             });
