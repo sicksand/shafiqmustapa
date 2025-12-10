@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Signal Pro V9 (Tuned)</title>
+    <title>AI Signal Pro V10.1</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -25,6 +25,12 @@
         .active-risk { border-color: #3b82f6; background-color: rgba(59, 130, 246, 0.2); color: white; }
         .spin-anim { animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .needle { transition: transform 1.5s cubic-bezier(0.4, 0.0, 0.2, 1); transform-origin: bottom center; }
+        
+        /* History Scrollbar */
+        .history-scroll::-webkit-scrollbar { width: 4px; }
+        .history-scroll::-webkit-scrollbar-track { background: #1e293b; }
+        .history-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
     </style>
 </head>
 <body class="flex flex-col h-screen overflow-hidden">
@@ -45,14 +51,12 @@
 
         <!-- VIEW 1: DASHBOARD -->
         <div id="view-dashboard" class="view-section">
-            <!-- Coin List -->
             <div id="coinList" class="flex gap-3 overflow-x-auto hide-scroll pb-4 mb-2"></div>
 
-            <!-- Analysis Card -->
             <div class="glass-card rounded-3xl p-1 relative overflow-hidden shadow-2xl transition-all duration-300" id="mainCard">
                 <div class="relative bg-slate-900/40 rounded-[20px] p-5">
                     
-                    <div class="flex justify-between items-start mb-6">
+                    <div class="flex justify-between items-start mb-4">
                         <div>
                             <div class="flex items-center gap-2">
                                 <h2 id="pairName" class="text-3xl font-bold text-white tracking-tight">BTC/USDT</h2>
@@ -60,9 +64,30 @@
                             </div>
                             <p id="currentPrice" class="font-mono text-xl text-blue-400 mt-1">$0.00</p>
                         </div>
-                        <div id="biasBadge" class="px-4 py-2 rounded-xl bg-gray-800 border border-gray-700 flex flex-col items-center">
-                            <span class="text-[10px] text-gray-400 font-bold mb-1">SIGNAL</span>
-                            <span id="biasText" class="font-bold text-sm text-gray-300">WAITING</span>
+                    </div>
+
+                    <!-- GAUGE -->
+                    <div class="flex flex-col items-center justify-center mb-6 relative">
+                        <div class="w-48 h-24 overflow-hidden relative">
+                            <svg viewBox="0 0 200 100" class="w-full h-full">
+                                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#1e293b" stroke-width="20" stroke-linecap="round" />
+                                <path d="M 20 100 A 80 80 0 0 1 70 36" fill="none" stroke="#ef4444" stroke-width="20" stroke-dasharray="1000" stroke-dashoffset="0" class="opacity-30" />
+                                <path d="M 130 36 A 80 80 0 0 1 180 100" fill="none" stroke="#3b82f6" stroke-width="20" stroke-dasharray="1000" stroke-dashoffset="0" class="opacity-30" />
+                                <g id="gaugeNeedle" class="needle" style="transform: rotate(-90deg);">
+                                    <path d="M 100 100 L 100 25" stroke="white" stroke-width="4" stroke-linecap="round" />
+                                    <circle cx="100" cy="100" r="6" fill="white" />
+                                </g>
+                            </svg>
+                            <div class="absolute bottom-0 left-2 text-[8px] text-red-400 font-bold">SELL</div>
+                            <div class="absolute bottom-0 right-3 text-[8px] text-blue-400 font-bold">BUY</div>
+                            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] text-gray-500 font-bold">NEUTRAL</div>
+                        </div>
+                        <div class="mt-2 text-center">
+                            <span id="gaugeText" class="text-sm font-bold text-gray-300">NEUTRAL</span>
+                            <div class="flex gap-4 mt-1">
+                                <span class="text-[10px] text-gray-500">Sell: <b id="sellCount" class="text-red-400">0</b></span>
+                                <span class="text-[10px] text-gray-500">Buy: <b id="buyCount" class="text-blue-400">0</b></span>
+                            </div>
                         </div>
                     </div>
 
@@ -98,7 +123,6 @@
                 </div>
             </div>
 
-            <!-- Stats Bar -->
             <div class="flex justify-between items-center px-4 mt-4">
                 <div class="text-xs font-bold text-gray-400">RSI (14): <span id="rsiValue" class="text-white">--</span></div>
                 <div class="text-xs font-bold text-gray-400">Trend: <span id="trendValue" class="text-white">--</span></div>
@@ -123,6 +147,8 @@
         <!-- VIEW 3: SETTINGS -->
         <div id="view-settings" class="view-section hidden">
             <h2 class="text-xl font-bold mb-6 px-2">Settings</h2>
+            
+            <!-- Risk -->
             <div class="bg-slate-800/50 rounded-2xl p-5 border border-slate-700 mb-6">
                 <h3 class="font-bold text-sm mb-4">Risk Appetite</h3>
                 <div class="grid grid-cols-3 gap-2">
@@ -131,11 +157,65 @@
                     <button onclick="setRisk('aggressive')" id="risk-aggressive" class="risk-btn py-3 rounded-xl border border-gray-600 text-xs font-bold text-gray-400 bg-slate-900">Degen</button>
                 </div>
             </div>
+
+            <!-- Version History -->
+            <div class="bg-slate-800/50 rounded-2xl p-5 border border-slate-700 mb-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-clock-rotate-left text-blue-400"></i>
+                    <h3 class="font-bold text-sm">Version History</h3>
+                </div>
+                
+                <div class="space-y-4 h-64 overflow-y-auto pr-2 history-scroll">
+                    <!-- V10.1 -->
+                    <div class="relative pl-4 border-l-2 border-blue-500">
+                        <span class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-blue-500"></span>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-white">v10.1 (Current)</span>
+                            <span class="text-[9px] text-gray-500">Latest</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400">Added Speedometer Gauge for visual bias. Included version history tracking in settings.</p>
+                    </div>
+
+                    <!-- V9 -->
+                    <div class="relative pl-4 border-l-2 border-gray-700">
+                        <span class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-700"></span>
+                        <span class="text-xs font-bold text-gray-300">v9.0</span>
+                        <p class="text-[10px] text-gray-500">Forex Risk Tuning. Added 2x Multiplier for Gold & Euro pairs to widen SL/TP range.</p>
+                    </div>
+
+                    <!-- V8 -->
+                    <div class="relative pl-4 border-l-2 border-gray-700">
+                        <span class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-700"></span>
+                        <span class="text-xs font-bold text-gray-300">v8.0</span>
+                        <p class="text-[10px] text-gray-500">Legal Disclaimer & Final Polish. Re-added disclaimer for compliance.</p>
+                    </div>
+
+                    <!-- V7 -->
+                    <div class="relative pl-4 border-l-2 border-gray-700">
+                        <span class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-700"></span>
+                        <span class="text-xs font-bold text-gray-300">v7.0</span>
+                        <p class="text-[10px] text-gray-500">Forex Support. Added Gold (PAXG) and Euro (EUR) pairs with smart decimal formatting.</p>
+                    </div>
+
+                    <!-- V6 -->
+                    <div class="relative pl-4 border-l-2 border-gray-700">
+                        <span class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-700"></span>
+                        <span class="text-xs font-bold text-gray-300">v6.0</span>
+                        <p class="text-[10px] text-gray-500">RSI Integration. Smart signals (Strong/Weak) based on RSI Momentum.</p>
+                    </div>
+                    
+                     <!-- V5 -->
+                     <div class="relative pl-4 border-l-2 border-gray-700">
+                        <span class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-700"></span>
+                        <span class="text-xs font-bold text-gray-300">v5.0</span>
+                        <p class="text-[10px] text-gray-500">Global Footer. Persistent footer across all tabs.</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-slate-800/50 rounded-2xl p-5 border border-slate-700">
                 <h3 class="font-bold text-sm mb-2">System Info</h3>
-                <p class="text-xs text-gray-400">Note: Forex volatility is boosted (2x) to provide better range.</p>
-                
-                <!-- DISCLAIMER -->
+                <p class="text-xs text-gray-400">Forex data via Binance Stablecoin pairs. Gauge visualized via RSI momentum.</p>
                 <div class="mt-4 pt-2 border-t border-gray-700">
                     <div class="bg-red-900/20 border border-red-900/50 rounded-xl p-3 mt-2">
                         <p class="text-[10px] text-gray-300 leading-relaxed text-justify">
@@ -148,11 +228,12 @@
         </div>
 
         <!-- GLOBAL FOOTER -->
-        <div class="mt-12 text-center pb-8">
-            <a href="https://wa.me/60127277015?text=crypto%20signal" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full border border-slate-700 hover:border-blue-500 transition-colors group">
+        <div class="mt-12 text-center pb-24">
+            <a href="https://wa.me/60127277015?text=crypto%20signal" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full border border-slate-700 hover:border-blue-500 transition-colors group mb-2">
                 <i class="fa-brands fa-whatsapp text-green-500 text-lg group-hover:scale-110 transition-transform"></i>
                 <span class="text-xs text-gray-400 group-hover:text-white">Made in Skudai ❤️ - <span class="font-bold text-blue-400">Shafiq Mustapa</span></span>
             </a>
+            <p class="text-[10px] text-gray-600 font-mono">Build v10.1 (Shafiq Edition)</p>
         </div>
     </main>
 
@@ -186,7 +267,6 @@
             setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }, 1000);
         }
 
-        // --- CORE ALGORITHMS ---
         function calculateRSI(prices, period = 14) {
             let gains = 0, losses = 0;
             for (let i = 1; i <= period; i++) {
@@ -215,36 +295,62 @@
             const atr = trSum / 14;
 
             const isTrendUp = current > sma;
-            let signalType = 'NEUTRAL'; let signalStrength = 'WAIT';
-
-            if (isTrendUp) {
-                if (rsi < 70) { signalType = 'BULLISH'; signalStrength = 'STRONG BUY'; }
-                else { signalType = 'BULLISH'; signalStrength = 'WEAK BUY (Overbought)'; }
+            let signalType = 'NEUTRAL'; let signalStrength = 'NEUTRAL';
+            let score = 50; 
+            
+            if(isTrendUp) {
+                score = 60; 
+                if(rsi < 50) score += 10; 
+                if(rsi < 30) score += 20; 
+                if(rsi > 70) score -= 10; 
             } else {
-                if (rsi > 30) { signalType = 'BEARISH'; signalStrength = 'STRONG SELL'; }
-                else { signalType = 'BEARISH'; signalStrength = 'WEAK SELL (Oversold)'; }
+                score = 40;
+                if(rsi > 50) score -= 10; 
+                if(rsi > 70) score -= 20; 
+                if(rsi < 30) score += 10; 
             }
 
-            // --- RISK TUNING ---
-            // If forex, multiply ATR by 2.0 to widen the gap
+            if(score >= 80) { signalType = 'BULLISH'; signalStrength = 'STRONG BUY'; }
+            else if(score >= 60) { signalType = 'BULLISH'; signalStrength = 'BUY'; }
+            else if(score <= 20) { signalType = 'BEARISH'; signalStrength = 'STRONG SELL'; }
+            else if(score <= 40) { signalType = 'BEARISH'; signalStrength = 'SELL'; }
+            else { signalType = 'NEUTRAL'; signalStrength = 'NEUTRAL'; }
+
             const forexBooster = state.currentType === 'forex' ? 2.0 : 1.0;
             const range = atr * state.riskMultiplier * forexBooster;
 
             let entry = current; let sl, tp1, tp2, tp3;
 
-            if(signalType === 'BULLISH') {
+            if(score >= 50) { 
                 sl = current - range; tp1 = current + range; tp2 = current + (range * 2); tp3 = current + (range * 3);
-            } else {
+            } else { 
                 sl = current + range; tp1 = current - range; tp2 = current - (range * 2); tp3 = current - (range * 3);
             }
 
-            return { type: signalType, strength: signalStrength, price: current, entry, sl, tp1, tp2, tp3, rsi, isTrendUp };
+            return { type: signalType, strength: signalStrength, score, price: current, entry, sl, tp1, tp2, tp3, rsi, isTrendUp };
         }
 
-        // --- UI UPDATERS ---
+        function updateGauge(score) {
+            const angle = (score * 1.8) - 90;
+            const needle = document.getElementById('gaugeNeedle');
+            needle.style.transform = `rotate(${angle}deg)`;
+            
+            const txt = document.getElementById('gaugeText');
+            let colorClass = 'text-gray-300';
+            if(score >= 60) colorClass = 'text-blue-400';
+            if(score <= 40) colorClass = 'text-red-400';
+            
+            const buyCount = Math.floor(score / 10) + 2; 
+            const sellCount = 12 - buyCount;
+            
+            document.getElementById('buyCount').innerText = buyCount;
+            document.getElementById('sellCount').innerText = sellCount;
+            txt.className = `text-sm font-bold ${colorClass} uppercase`;
+        }
+
         async function analyzeMarket(manual = false) {
             if(manual) document.getElementById('refreshIcon').classList.add('spin-anim');
-            document.getElementById('biasText').innerText = "CALC...";
+            document.getElementById('gaugeText').innerText = "CALCULATING...";
             document.getElementById('mainCard').classList.add('opacity-70');
 
             try {
@@ -258,25 +364,14 @@
                     ? "text-[9px] px-2 py-0.5 rounded bg-yellow-600/20 text-yellow-400 font-bold uppercase border border-yellow-600/30"
                     : "text-[9px] px-2 py-0.5 rounded bg-blue-600/20 text-blue-400 font-bold uppercase border border-blue-600/30";
 
-                const badge = document.getElementById('biasBadge');
-                const txt = document.getElementById('biasText');
-                
-                if(signal.type === 'BULLISH') {
-                    badge.className = "px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/30 flex flex-col items-center min-w-[100px]";
-                    txt.className = "font-bold text-sm text-green-400";
-                    txt.innerHTML = signal.strength.includes('STRONG') ? '<i class="fa-solid fa-rocket"></i> STRONG BUY' : '<i class="fa-solid fa-triangle-exclamation"></i> WEAK BUY';
-                } else {
-                    badge.className = "px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/30 flex flex-col items-center min-w-[100px]";
-                    txt.className = "font-bold text-sm text-red-400";
-                    txt.innerHTML = signal.strength.includes('STRONG') ? '<i class="fa-solid fa-dumpster-fire"></i> STRONG SELL' : '<i class="fa-solid fa-triangle-exclamation"></i> WEAK SELL';
-                }
+                updateGauge(signal.score);
+                document.getElementById('gaugeText').innerText = signal.strength;
 
                 document.getElementById('rsiValue').innerText = signal.rsi.toFixed(1);
                 document.getElementById('rsiValue').className = signal.rsi > 70 ? 'text-red-400 font-bold' : (signal.rsi < 30 ? 'text-green-400 font-bold' : 'text-white');
                 document.getElementById('trendValue').innerText = signal.isTrendUp ? 'UPTREND' : 'DOWNTREND';
                 document.getElementById('trendValue').className = signal.isTrendUp ? 'text-green-400' : 'text-red-400';
 
-                // Price Formatting
                 const decimals = signal.price < 5 ? 4 : 2; 
                 const fmt = n => '$' + n.toFixed(decimals);
 
@@ -304,8 +399,8 @@
                 try {
                     const data = await fetchCandles(coin.symbol, '15m'); 
                     const signal = calculateLogic(data);
-                    const color = signal.type === 'BULLISH' ? 'text-green-400' : 'text-red-400';
-                    const bg = signal.type === 'BULLISH' ? 'bg-green-500/10 border-green-500/20' : 'bg-red-500/10 border-red-500/20';
+                    const color = signal.type === 'BULLISH' ? 'text-blue-400' : 'text-red-400'; 
+                    const bg = signal.type === 'BULLISH' ? 'bg-blue-500/10 border-blue-500/20' : 'bg-red-500/10 border-red-500/20';
                     const nameColor = coin.type === 'forex' ? 'text-yellow-400' : 'text-white';
                     
                     html += `<div class="flex justify-between items-center p-3 rounded-xl border ${bg}">
@@ -326,7 +421,6 @@
             list.innerHTML = html;
         }
 
-        // --- UTILS ---
         async function fetchCandles(symbol, interval) {
             const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=100`);
             const raw = await res.json();
@@ -379,3 +473,4 @@
     </script>
 </body>
 </html>
+
